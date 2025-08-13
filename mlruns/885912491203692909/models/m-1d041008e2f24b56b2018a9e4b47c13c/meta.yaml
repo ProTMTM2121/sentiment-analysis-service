@@ -1,0 +1,10 @@
+artifact_location: file:///Users/bhavinjain/sentiment-analysis-service/mlruns/885912491203692909/models/m-1d041008e2f24b56b2018a9e4b47c13c/artifacts
+creation_timestamp: 1755119830884
+experiment_id: '885912491203692909'
+last_updated_timestamp: 1755119836228
+model_id: m-1d041008e2f24b56b2018a9e4b47c13c
+model_type: null
+name: sentiment-model
+source_run_id: 91e833e4521643bbbc63dc379962b7f8
+status: 2
+status_message: null
