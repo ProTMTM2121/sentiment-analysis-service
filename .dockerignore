@@ -1,0 +1,13 @@
+# Git and DVC metadata
+.git/
+.dvc/
+
+# Virtual environment
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Local credentials
+*.json
