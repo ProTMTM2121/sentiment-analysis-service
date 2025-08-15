@@ -26,7 +26,11 @@ def train():
         mlflow.sklearn.log_model(pipeline, "model", registered_model_name="sentiment-model")
         
         # This is the critical line to fix the path issue
-        print(f"{run.info.artifact_uri.replace('file://', '')}/model")
-
+# Get the IDs needed to build a simple path
+        run_id = run.info.run_id
+        experiment_id = run.info.experiment_id
+        # Print the simple, relative path that Docker can understand
+        print(f"mlruns/{experiment_id}/{run_id}/artifacts/model")
+        
 if __name__ == "__main__":
     train()
