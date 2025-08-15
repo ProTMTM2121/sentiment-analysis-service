@@ -30,8 +30,10 @@ jobs:
           dvc remote modify origin --local password ${{ secrets.DAGSHUB_TOKEN }}
 
       # Step 5: Pull the data from DagsHub
-      - name: Pull Data with DVC
-        run: dvc pull -r origin
+      - name: Authenticate DVC with DagsHub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY }}
 
       # Step 6: Run the model training script
       - name: Train Model
