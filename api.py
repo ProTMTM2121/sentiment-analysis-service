@@ -5,7 +5,7 @@ from mlflow.tracking import MlflowClient
 import traceback
 import traceback
 
-print("--- RUNNING API.PY VERSION 2.0 ---") # <-- ADD THIS LINE
+print("--- RUNNING LATEST API.PY VERSION ---") # <-- ADD THIS LINE
 
 # ... rest of the code
 app = FastAPI()
