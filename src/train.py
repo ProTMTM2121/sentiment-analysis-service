@@ -49,7 +49,17 @@ def train():
         print(f"F1 Score: {f1:.4f}")
         
         # Log the model
-        mlflow.sklearn.log_model(pipeline, "sentiment-model")
+                # ... inside the train() function, after y_pred is calculated ...
+
+        input_example = X_train.head(1)
+        
+        # Log the model AND register a new version under the specified name
+        mlflow.sklearn.log_model(
+            sk_model=pipeline,
+            artifact_path="sentiment-model",
+            input_example=input_example,
+            registered_model_name="sentiment-model"
+        )
 
 if __name__ == "__main__":
     train()
