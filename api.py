@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from pantic import BaseModel
+from pydantic import BaseModel
 import mlflow
 from mlflow.tracking import MlflowClient
 import traceback
