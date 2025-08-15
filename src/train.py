@@ -51,8 +51,7 @@ def train():
         # Log the model
                 # ... inside the train() function, after y_pred is calculated ...
 
-        input_example = X_train.head(1)
-        
+        input_example = X_train.head(1).to_frame()        
         # Log the model AND register a new version under the specified name
         mlflow.sklearn.log_model(
             sk_model=pipeline,
