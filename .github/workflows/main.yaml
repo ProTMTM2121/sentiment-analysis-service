@@ -45,6 +45,7 @@ jobs:
           context: .
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/sentiment-api:latest
+          no-cache: true
 
       - name: Log in to Azure
         uses: azure/login@v1
