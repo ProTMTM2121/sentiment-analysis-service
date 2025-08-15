@@ -1,3 +1,4 @@
+# .github/workflows/main.yml
 name: MLOps CI/CD Pipeline
 
 on:
@@ -43,7 +44,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          #... (context, push, tags)
+          context: .
+          push: true
+          tags: protmtm2121/sentiment-api:latest
           build-args: |
             MODEL_PATH=${{ steps.train_step.outputs.MODEL_ARTIFACT_PATH }}
 
