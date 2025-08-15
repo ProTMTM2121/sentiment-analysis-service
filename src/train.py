@@ -1,4 +1,3 @@
-# src/train.py
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -8,7 +7,6 @@ import joblib
 import os
 
 def train():
-    # Create a directory to save the model
     os.makedirs("outputs", exist_ok=True)
 
     df = pd.read_csv('data/reviews.csv')
@@ -23,7 +21,6 @@ def train():
     ])
     pipeline.fit(X_train, y_train)
     
-    # Save the model to a simple, known location
     joblib.dump(pipeline, "outputs/model.joblib")
     print("Model trained and saved to outputs/model.joblib")
 

@@ -1,37 +1,60 @@
-# api.py
-from fastapi import FastAPI
-from pantic import BaseModel
-import joblib
-import pandas as pd
+name: MLOps CI/CD Pipeline
 
-app = FastAPI()
-model = None
-startup_error_message = None
+on:
+  push:
+    branches: [ "main" ]
 
-try:
-    # Load the model directly from the fixed path inside the container
-    model = joblib.load("/model/model.joblib")
-    print("Model loaded successfully.")
-except Exception as e:
-    startup_error_message = str(e)
-    model = None
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-class Review(BaseModel):
-    text: str
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
 
-@app.get("/")
-def read_root():
-    if startup_error_message:
-        return {"error_at_startup": startup_error_message}
-    return {"message": "Sentiment Analysis API is running!"}
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
 
-@app.post("/predict")
-def predict_sentiment(review: Review):
-    if model is None:
-        return {"error": "Model is not loaded.", "details": startup_error_message}
-    
-    # The scikit-learn pipeline expects an iterable (like a list)
-    prediction = model.predict([review.text])
-    sentiment = "Positive" if prediction[0] == 1 else "Negative"
-    
-    return {"text": review.text, "sentiment": sentiment}
+      - name: Authenticate DVC with DagsHub
+        run: |
+          dvc remote modify origin --local access_key_id ${{ secrets.DAGSHUB_ACCESS_KEY_ID }}
+          dvc remote modify origin --local secret_access_key ${{ secrets.DAGSHUB_SECRET_ACCESS_KEY }}
+
+      - name: Pull Data with DVC
+        run: dvc pull -r origin
+
+      - name: Train Model
+        run: python src/train.py
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: protmtm2121/sentiment-api:latest
+
+      - name: Log in to Azure
+        uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure App Service
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'bhavin-sentiment-api'
+          images: 'protmtm2121/sentiment-api:latest'
