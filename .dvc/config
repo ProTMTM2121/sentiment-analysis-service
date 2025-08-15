@@ -4,3 +4,6 @@
     url = gdrive://1pTau7K8MZ4OIwu3mKh-7lnsXykbD9ZhA
     gdrive_service_account_json_file_path = ../sentiment-analysis-468922-10a9e82c4186.json
     gdrive_use_service_account = true
+['remote "origin"']
+    url = s3://dvc
+    endpointurl = https://dagshub.com/ProTMTM2121/sentiment-analysis-service.s3
