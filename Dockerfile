@@ -11,7 +11,12 @@ COPY ./requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the rest of the application code into the container at /app
+# ... (after RUN pip install) ...
+ARG MODEL_PATH
+COPY ${MODEL_PATH} /model/
+
 COPY . /app/
+# ... (rest of the file) ...
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
