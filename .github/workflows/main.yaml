@@ -1,4 +1,3 @@
-# .github/workflows/main.yml
 name: MLOps CI/CD Pipeline
 
 on:
@@ -32,14 +31,25 @@ jobs:
         run: dvc pull -r origin
 
       - name: Train Model
-        id: train_step
-        run: echo "MODEL_ARTIFACT_PATH=$(python src/train.py)" >> $GITHUB_OUTPUT
+        run: python src/train.py
+      
+      - name: Upload Model as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sentiment-model-artifact
+          path: mlruns/
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Download Model Artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: sentiment-model-artifact
+          path: mlruns/
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
@@ -47,8 +57,6 @@ jobs:
           context: .
           push: true
           tags: protmtm2121/sentiment-api:latest
-          build-args: |
-            MODEL_PATH=${{ steps.train_step.outputs.MODEL_ARTIFACT_PATH }}
 
       - name: Log in to Azure
         uses: azure/login@v1

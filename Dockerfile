@@ -1,13 +1,11 @@
-# Dockerfile
 FROM python:3.11-slim
 WORKDIR /app
 COPY ./requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Add an argument for the model path from the workflow
-ARG MODEL_PATH
-# Copy the trained model from the specific path to a fixed location
-COPY ${MODEL_PATH} /model/
+# Copy the model from the mlruns directory using a wildcard
+# This finds the model regardless of the exact run ID
+COPY mlruns/0/*/artifacts/model/ /model/
 
 COPY . /app/
 EXPOSE 8000
