@@ -50,6 +50,9 @@ jobs:
         with:
           name: sentiment-model-artifact
           path: mlruns/
+      
+      - name: DEBUG - Show contents of workspace
+        run: ls -R
 
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
