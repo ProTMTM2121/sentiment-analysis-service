@@ -32,7 +32,7 @@ jobs:
 
       - name: Train Model
         id: train_step
-        run: echo "$(python src/train.py)" >> $GITHUB_OUTPUT
+        run: echo "MODEL_ARTIFACT_PATH=$(python src/train.py)" >> $GITHUB_OUTPUT
 
       - name: Login to Docker Hub
         uses: docker/login-action@v3
@@ -43,11 +43,9 @@ jobs:
       - name: Build and Push Docker Image
         uses: docker/build-push-action@v5
         with:
-          context: .
-          push: true
-          tags: protmtm2121/sentiment-api:latest
+          #... (context, push, tags)
           build-args: |
-            MODEL_PATH=${{ steps.train_step.outputs.MODEL_PATH }}
+            MODEL_PATH=${{ steps.train_step.outputs.MODEL_ARTIFACT_PATH }}
 
       - name: Log in to Azure
         uses: azure/login@v1

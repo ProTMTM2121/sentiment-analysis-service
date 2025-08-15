@@ -13,8 +13,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application code into the container at /app
 # ... (after RUN pip install) ...
 ARG MODEL_PATH
-COPY ${MODEL_PATH} /model/
-
+COPY ${MODEL_PATH}/. /model/
 COPY . /app/
 # ... (rest of the file) ...
 

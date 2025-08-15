@@ -7,6 +7,9 @@ from sklearn.pipeline import Pipeline
 import mlflow
 import mlflow.sklearn
 
+# Set a consistent experiment name
+mlflow.set_experiment("Sentiment Analysis")
+
 def train():
     df = pd.read_csv('data/reviews.csv')
     df['sentiment'] = df['sentiment'].map({'positive': 1, 'negative': 0})
@@ -21,13 +24,10 @@ def train():
         ])
         pipeline.fit(X_train, y_train)
 
-        # Simply log the model as an artifact
-        mlflow.sklearn.log_model(pipeline, "model")
+        mlflow.sklearn.log_model(pipeline, "model", registered_model_name="sentiment-model")
 
-        # Print the exact location of the saved model for the workflow to use
-        run_id = run.info.run_id
-        experiment_id = run.info.experiment_id
-        print(f"MODEL_PATH=mlruns/{experiment_id}/{run_id}/artifacts/model")
+        # Print ONLY the artifact path for the workflow
+        print(f"{run.info.artifact_uri}/model")
 
 if __name__ == "__main__":
     train()
